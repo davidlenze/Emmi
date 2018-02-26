@@ -9,27 +9,15 @@ int ggt3_r(int a, int b);
 
 
 int main(void) {
- int cont=0;
- int mode=0;
- while(cont==0) {
-   printf("Select one of the following modes \n 1 : simple recursive \n 2 : simple iterative \n 3 : euklidean recursive \n 4 : euklidean iterative \n 5 : binary recursive \n 6 : binary iterative \n\n" );
-   scanf("%u", &mode);
-   if(mode>0) {cont=1;}
- }
- while(cont==1) {
-   printf("Input two integers to be checked for their gcd\n" );
-   int x,y;
-   scanf("%u", &x);
-   scanf("%u",&y );
-   printf("the gdc is\n %u \n \n",ggt(x,y,mode) );
-   printf("type 1 to continue, any other number to exit\n");
-   scanf("%u",&cont );
 
+ int mode=3;
+ int x=2;
+ int y=10;
+ printf("the gdc is\n %u \n \n",ggt(x,y,mode) );
  }
 
  return 0;
 }
-mhfd.kv
 
 int ggt(int n, int m, int mode) {
 
