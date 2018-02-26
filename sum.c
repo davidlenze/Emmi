@@ -4,18 +4,10 @@ int sum(int n);
 int func1(int a);
 
 int main(void) {
- int cont=1;
 
- while(cont==1) {
-   printf("Input in integer to which you want to calculate the sum\n" );
-
-   int x;
-   scanf("%u", &x);
-
+   x=10;
    printf("the sum is\n %u \n", sum(x) );
 
-   printf("type 1 to continue, any other number to exit\n");
-   scanf("%u",&cont );
  }
 
  return 0;
