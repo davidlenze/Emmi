@@ -1,21 +1,25 @@
 #include <stdio.h>
 #include <time.h>
 
-//clock_t start,end; :)
+//clock_t start,end;
 //double cpu_time_used;
 
 double egyptian_recursive(double a, int b);
 double egyptian_iterative(double a, int b);
-double classic(double a, int b);
+double classic_iterative(double a, int b);
+double classic_recursive(double a, int b);
 double power(double x, int n, int mode);
 
 
 int main(void) {
 
+  //double v1;
+  int mode=2;
   double x=12.5;
   int n=3;
-  int mode=3;
+
   printf("the power is\n %12.6f \n \n", power(x,n,mode) );
+
 
   return 0;
 }
@@ -25,22 +29,22 @@ double power(double x, int n, int mode) {
 
   switch(mode) {
     case 1: return classic_recursive(x,n); break;
-    case 1: return classic_iterative(x,n); break;
+    case 2: return classic_iterative(x,n); break;
 	  case 3: return egyptian_recursive(x,n); break;
     case 4: return egyptian_iterative(x,n); break;
-	  default: return 0; break;
+	  default: return 0.0; break;
  }
 
 }
 
 double classic_recursive(double x, int n) {
-  if(n==0) {return 1;}
+  if(n==0) {return 1.0;}
   else if(n==1) {return x;}
-  else {return x=x*classic_recursive(x,n-1);}
+  else {return x = x*classic_recursive(x,n-1); }
 }
 
 double classic_iterative(double x, int n) {
-  double p=1;
+  double p=1.0;
   for (int i = 1; i <= n; i++) {
     p=x*p;
   }
