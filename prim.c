@@ -31,7 +31,7 @@ int prim(int n) {
 
   int a=2;
   int b=1;
-  int s=(n/2);
+  int s=(sqrt(n));
   if(n==1) {b=0;}
   else {
     while(b==1 && a<=s) {
@@ -41,4 +41,3 @@ int prim(int n) {
       }
   return b;
 }
-
