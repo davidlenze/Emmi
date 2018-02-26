@@ -1,4 +1,8 @@
 #include <stdio.h>
+#include <time.h>
+
+clock_t start,end;
+double cpu_time_used;
 
 int ggt1(int a, int b);
 int ggt1_r(int a, int b);
@@ -10,23 +14,36 @@ int ggt3_r(int a, int b);
 
 int main(void) {
 
- int mode=4;
- int n,m;
- int low, high;
+  int n,m;
+  int low, high;
+
+  low=1;
+  high=2000;
+
+for (size_t i = 1; i < 7; i++) {
+
+ int mode=i;
  int v1;
 
- low=1;
- high=50;
-
+ start = clock();
  for (m = low; m <= high; m++) {
    for (n = low; n <= high; n++) {
-     v1=ggt(m,n,mode);
-     printf("%5u %5u %u \n",m,n,v1);
+
+     v1 = ggt(m,n,mode);
+     //printf("%5u %u %5u \n",m,n,v1);
 
    }
  }
- return 0;
+  end=clock();
+
+  cpu_time_used = 1.0*(end-start)/CLOCKS_PER_SEC;
+  printf("%u %e %12.6f\n \n", mode, cpu_time_used, cpu_time_used);
+
+  }
+
+  return 0;
 }
+
 
 int ggt(int n, int m, int mode) {
 
@@ -113,3 +130,4 @@ int ggt3(int n, int m) {
     }}  }
   return n*M;
 }
+
