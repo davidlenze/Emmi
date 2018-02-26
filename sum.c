@@ -29,7 +29,7 @@ int sum(int n) {
 
  int s=0;
 
- for (size_t i = 1; i < n+1; i++) {
+ for (int i = 1; i < n+1; i++) {
 
    s=s+func1(i);
  }
