@@ -49,8 +49,10 @@ printf("%f\n",Rational_asDouble(result));
 unsigned int ggt (unsigned int m, unsigned int n){ //euklid itterativ
   unsigned int d;
 
-if(m==0||n==0){
-  return 1;
+if(m==0){
+  return n;
+}else if (n==0){
+  return m;
 }
 
 else{
