@@ -24,20 +24,24 @@ void RationalSet_showElement (Rational);
 double Rational_asDouble (Rational);
 
 int main (void){
+
+
+
+
 unsigned char v,w;
 unsigned int p,q,r,s;
 
-v=5;    //enter your numbers here
-w=4;
+v=5;
+w=2;
 p=15;
 q=46;
-r=13;
-s=39;
+r=7;
+s=46;
 
 Rational m,n,result;
 m = RationalSet_setElement(v,p,q);
 n = RationalSet_setElement(w,r,s);
-result = RationalSet_calcQuotient(m,n);  //which type of operation
+result = RationalSet_calcDifference(m,n);
 
 RationalSet_showElement(result);
 printf("%f\n",Rational_asDouble(result));
@@ -49,13 +53,13 @@ printf("%f\n",Rational_asDouble(result));
 unsigned int ggt (unsigned int m, unsigned int n){ //euklid itterativ
   unsigned int d;
 
-if(m==0){
-  return n;
-}else if (n==0){
+    if(m==0){
+        return n;
+    }else if (n==0){
   return m;
-}
+  }
 
-else{
+  else{
 
     while(m%n!=0){
 	      d=m%n;
@@ -64,37 +68,37 @@ else{
                   }
     return n;
 
-}
+  }
 }
 
 Rational RationalSet_setElement(unsigned char s, unsigned int p, unsigned int q){
 
-Rational r;
-r.s=s%2;
-r.p=p/ggt(p,q);
-r.q=q/ggt(p,q);
+    Rational r;
+    r.s=s%2;
+    r.p=p/ggt(p,q);
+    r.q=q/ggt(p,q);
 
-return r;
+    return r;
 }
 
 Rational RationalSet_setZero(void){
 
-Rational r;
-r.s=0;
-r.p=0;
-r.q=1;
+    Rational r;
+    r.s=0;
+    r.p=0;
+    r.q=1;
 
-return r;
+    return r;
 }
 
 Rational RationalSet_setOne(void){
 
-Rational r;
-r.s=0;
-r.p=1;
-r.p=1;
+    Rational r;
+    r.s=0;
+    r.p=1;
+    r.p=1;
 
-return r;
+    return r;
 
 }
 
@@ -118,27 +122,27 @@ Rational RationalSet_calcSum (Rational r1, Rational r2){
             s=r1.s;
             p=r1.p*r2.q-r2.p*r1.q;
             q=r1.q*r2.q;
-}
+            }
 
 
-return RationalSet_setElement(s,p,q);
+            return RationalSet_setElement(s,p,q);
 }
 
 Rational RationalSet_calcDifference (Rational r1, Rational r2){
 
-  Rational help=RationalSet_setElement(r2.s+1,r2.p,r2.q);
+    r2.s=(r2.s+1)%2;
 
-  return RationalSet_calcSum(r1,help);
+    return RationalSet_calcSum(r1,r2);
 
 }
 
 Rational RationalSet_calcProduct (Rational r1, Rational r2){
 
-  unsigned char s = (r1.s+r2.s);
-  unsigned int p = r1.p*r2.p;
-  unsigned int q = r1.q*r2.q;
+    unsigned char s = (r1.s+r2.s);
+    unsigned int p = r1.p*r2.p;
+    unsigned int q = r1.q*r2.q;
 
-  return RationalSet_setElement(s,p,q);
+    return RationalSet_setElement(s,p,q);
 
 }
 
@@ -160,9 +164,9 @@ Rational RationalSet_calcQuotient (Rational r1, Rational r2){
 
 void RationalSet_showElement (Rational r){
   if(r.s==0||r.p==0){
-    printf("%u/%u \n",r.p,r.q);
+    printf("( %u / %u ) \n",r.p,r.q);
   }else {
-    printf("-%u/%u \n",r.p,r.q);
+    printf("- ( %u / %u ) \n",r.p,r.q);
   }
 }
 
@@ -170,6 +174,6 @@ double Rational_asDouble (Rational r){
 
 if(r.s==0||r.p==0){
   return (1.0*r.p)/(r.q);
-}else return (-1.0*r.p)/(r.q);
+}else return (-1.0*r.p)/(r.q)
 
 }
