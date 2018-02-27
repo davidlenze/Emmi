@@ -159,7 +159,7 @@ Rational RationalSet_calcQuotient (Rational r1, Rational r2){
 
 
 void RationalSet_showElement (Rational r){
-  if(r.s==0){
+  if(r.s==0||r.p==0){
     printf("%u/%u \n",r.p,r.q);
   }else {
     printf("-%u/%u \n",r.p,r.q);
@@ -168,7 +168,7 @@ void RationalSet_showElement (Rational r){
 
 double Rational_asDouble (Rational r){
 
-if(r.s==0){
+if(r.s==0||r.p==0){
   return (1.0*r.p)/(r.q);
 }else return (-1.0*r.p)/(r.q);
 
