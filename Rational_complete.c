@@ -27,7 +27,7 @@ int main (void){
 unsigned char v,w;
 unsigned int p,q,r,s;
 
-v=5;
+v=5;    //enter your numbers here
 w=4;
 p=15;
 q=46;
@@ -37,7 +37,7 @@ s=39;
 Rational m,n,result;
 m = RationalSet_setElement(v,p,q);
 n = RationalSet_setElement(w,r,s);
-result = RationalSet_calcQuotient(m,n);
+result = RationalSet_calcQuotient(m,n);  //which type of operation
 
 RationalSet_showElement(result);
 printf("%f\n",Rational_asDouble(result));
