@@ -7,8 +7,8 @@ double b_prime(double, unsigned int);
 double newton(double, unsigned int);
 
 int main (void){
-unsigned int n=2;
-double x0 = -2;
+unsigned int n=5;
+double x0 = -3.2;
 double root;
 
 root = newton(x0,n);
@@ -42,9 +42,12 @@ double b_prime(double x, unsigned int n) {
 }
 double newton(double xo, unsigned int n){
   double x =xo;
+  unsigned int i=0;
 
-  while(b(x, n) != 0.0){
+  while(i<50){
   x = x - b(x, n)/b_prime(x, n);
+  printf("i = %u, x = %e\n",i,x);
+  i = i+1;
 }
   return x;
 }
