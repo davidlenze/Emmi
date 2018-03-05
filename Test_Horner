@@ -1,0 +1,77 @@
+#include<stdlib.h>
+#include<stdio.h>
+
+double f (double);
+double expo (double, unsigned int);
+double expo_ (double, unsigned int);
+
+
+int main (void){
+double x=2.0;
+unsigned int n=1;
+
+while (expo_(x,n)!=expo_(x,n+1)){
+
+printf("%18.17f\n",expo_(x,n));
+printf("%18.17f\n",expo_(x,n+1)-expo_(x,n));
+  n++;
+
+}
+printf("%u\n",n );
+
+
+
+
+return EXIT_SUCCESS;
+}
+
+
+double expo (double x, unsigned int m){
+
+  double y;
+
+  if (x<0){
+    return 1/(expo (-x,m));
+  }
+    else if (x>1){
+      return expo(x/2,m)*expo(x/2,m);
+    }
+      else{
+          double out = 1;
+          double term = 1;
+
+          for (unsigned int j = 1; j<=m; j++){
+            term=term*(x/j);
+            out=out+term;
+          }
+            return out;
+
+          }
+
+}
+
+
+double expo_ (double x, unsigned int n){
+
+
+  if (x<0){
+    return 1/(expo_(-x,n));
+
+ }
+  else if (x>1){
+  return (expo_(x/2,n)*expo_(x/2,n));
+  //return y;
+
+  }
+    else{
+      double out=1;
+        for (unsigned int i=n; i>=1; i=i-1){
+
+             out=1+(x/i)*out;
+
+    }
+      return out;
+
+
+}
+}
