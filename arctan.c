@@ -2,19 +2,18 @@
 #include<stdio.h>
 #include <math.h>
 
-double arctan(double);
-double sum1(double);
-double sum2(double);
+long double arctan(long double);
+long double sum1(long double);
 
 int main(void) {
-  double A= arctan(1);
-  printf("%25.24f\n", A );
+  long double A= arctan(1.0/3) + arctan(0.5);
+  printf("%30.29Lf\n", 4*A);
 
   return 0;
 }
 
-double arctan(double x) {
-  double a=x/(1+sqrt(1+x*x));
+long double arctan(long double x) {
+  long double a=x/(1+sqrt(1+x*x));
   if(x<0) {return arctan(-x);}
   else if(x>1) {return 2*arctan(a);}
   else {return sum1(x);}
@@ -22,11 +21,11 @@ double arctan(double x) {
   }
 
 
-double sum1(double x) {
-  int n=10000;
-  double S=0;
-  double s=x/(1+x*x)*2*2*2;
-  double a,b;
+long double sum1(long double x) {
+  int n=100000;
+  long double S=0;
+  long double s=x/(1+x*x)*2*2*2;
+  long double a,b;
 
   for (int i = 0; i <= n+1; i++) {
     S=S+s;
