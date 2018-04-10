@@ -1,53 +1,40 @@
 #include <stdio.h>
 #include <math.h>
 
-double pot(double, unsigned int);
-double b(double, unsigned int);
-double b_prime(double, unsigned int);
+double f(double);
+double Df(double);
 double newton(double, unsigned int);
 
-int main (void){
+int main (void) {
+
 unsigned int n=5;
-double x0 = -3.2;
+double x0 = 1.5;
 double root;
 
 root = newton(x0,n);
-printf("%e %e\n", root, b(root, n) );
-
+printf("%e \n", root);
 return 0;
 }
 
-double pot(double x, unsigned int n) {
-  double factor = 1.0;
+double f(double x) {
 
-  if(n==0) {
-    return 1.0;
+  double result = pow(x,sqrt(1+x))-pow(sqrt(1+x),x);
+  return result;
+
+}
+
+double Df(double x ) {
+  double result1 = ((sqrt(1+x)/x)+(log(x)/(2*sqrt(1+x))))*pow(x,sqrt(1+x))-((x/(2*(1+x)))+log(1+x)/2)*pow(sqrt(1+x),x);
+  return result1;
+}
+
+double newton(double x0, unsigned int n) {
+
+  double x = x0;
+  for (size_t i = 0; i < n; i++) {
+    x=x-(f(x))/(Df(x));
   }
-  while(n !=1){
-    if(n%2 != 0){
-      factor = factor *x;
-    }
-    x =x*x;
-    n= n/2;
-    }
-  return factor * x;
-}
-double b(double x, unsigned int n) {
-  double result = pot(1.0 + x, n) - 1.0 -n*x;
-  return result;
-}
-double b_prime(double x, unsigned int n) {
-  double result = n * pot(1.0+x, n-1) -n;
-  return result;
-}
-double newton(double xo, unsigned int n){
-  double x =xo;
-  unsigned int i=0;
 
-  while(i<50){
-  x = x - b(x, n)/b_prime(x, n);
-  printf("i = %u, x = %e\n",i,x);
-  i = i+1;
-}
   return x;
 }
+
