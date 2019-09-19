@@ -1,5 +1,5 @@
-set terminal gif animate delay 2
-set output 'sortspeedy.gif'
+set terminal gif animate delay 1
+set output 'sortspeedy2.gif'
 stats 'gif.dtn' nooutput
 set xrange [0: 101]
 set yrange [0:66666]
