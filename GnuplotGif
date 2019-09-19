@@ -1,0 +1,12 @@
+set terminal gif animate delay 2
+set output 'sortspeedy.gif'
+stats 'gif.dtn' nooutput
+set xrange [0: 101]
+set yrange [0:66666]
+set boxwidth 0.9 relative
+     set style fill solid 1.0
+
+
+do for [i=1:int(STATS_blocks)] {
+    plot 'gif.dtn' index (i-1) with boxes
+}
