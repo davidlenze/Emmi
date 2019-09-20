@@ -28,10 +28,12 @@ int main(void) {
 
 void random_vector(double a[]) {
   unsigned int x=42;
+  unsigned int y=41;
   RNG R=RNG_Set_Knuth();
   for (size_t i = 0; i < 10; i++) {
-    a[i]=RNG_Evaluate(R,x);
+    a[i]=RNG_Evaluate(R,x)-RNG_Evaluate(R,y);
     x=RNG_Evaluate(R,x);
+    y=RNG_Evaluate(R,y);
   }
 }
 
