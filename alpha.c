@@ -7,20 +7,20 @@
 double v[10];
 void random_vector(double[10]);
 void report_vector(double[10]);
-void rotatate_vector(double[10], unsigned int);
-void backward_vector(double[] , unsigned int);
+void rotatate(double[10], unsigned int);
+void rotate_back(double[10] , unsigned int);
 
 int main(void) {
   random_vector(v);
   report_vector(v);
 
   for (unsigned int i = 9; i>0 ; i=i-1) {
-    rotatate_vector(v,i);
+    rotatate(v,i);
     printf("\n");
   }
 
   for (unsigned int i = 1; i<10 ; i=i+1) {
-    backward_vector(v,i);
+    rotate_back(v,i);
     printf("\n");
   }
 
@@ -42,20 +42,23 @@ void report_vector(double a[]) {
   printf("\n");
 }
 
-void rotatate_vector(double a[], unsigned int A) {
-  double c = a[A-1]/sqrt(a[A-1]*a[A-1]+a[A]*a[A]);
-  double s = -a[A]/sqrt(a[A-1]*a[A-1]+a[A]*a[A]);
-  double tmp=a[A];
-  a[A]=s;
-  a[A-1]=sqrt(a[A-1]*a[A-1]+tmp*tmp);
-  printf("%lf ",c );
-  printf("%lf\n",s );
+void rotatate(double a[], unsigned int A) {
+  double x=a[A-1];
+  double y=a[A];
+  double alpha=copysign(sqrt(x*x+y*y),x);
+  double c = x/alpha;
+  double s = -y/alpha;
+  a[A]=s/c;
+  a[A-1]=c*x-s*y;
   report_vector(a);
 }
 
-void backward_vector(double a[], unsigned int A) {
-  a[A]=-a[A]*a[A-1];
-  a[A-1]=sqrt(a[A-1]*a[A-1]-a[A]*a[A]);
-
+void rotate_back(double a[], unsigned int A) {
+  double t=a[A];
+  double alpha=a[A-1];
+  double c=sqrt(1/(1+t*t));
+  double s=t*c;
+  a[A-1]=c*alpha;
+  a[A]=-s*alpha;
   report_vector(a);
 }
