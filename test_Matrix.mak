@@ -5,10 +5,10 @@ OPTIONS = -std=c99 -pedantic -Wall -Wextra -Wdeclaration-after-statement -Wtradi
 Test_Matrix.exe : Test_Matrix.o Matrix.o
 		gcc -o Test_Matrix.exe Test_Matrix.o Matrix.o -lm
 
-Test_Matrix.o : Test_Matrix.c Matrix.h RNG.h
+Test_Matrix.o : Test_Matrix.c Matrix.h
 		gcc $(OPTIONS) -c Test_Matrix.c
 
-Matrix.o : Matrix.c Matrix.h RNG.h
+Matrix.o : Matrix.c Matrix.h
 		gcc $(OPTIONS) -c Matrix.c
 
 

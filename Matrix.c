@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include 'Matrix.h'
+#include "Matrix.h"
 
-Vektor Vektor_Create(size_t n){
-  Vektor v;
+Vector Vector_Create(size_t n){
+  Vector v;
   v.n = n;
   v.v = TupleCreate(n);
   return v;
@@ -36,37 +36,39 @@ void TupleDestroy(double * v){
   return;
 }
 
-void TupleOfTupleDestroy(double ** M){
-  for (size_t i = 0; i < count; i++) {
-    free(V[i]);
+void TupleOfTupleDestroy(double ** M, size_t m){
+  for (size_t i = 0; i < m; i++) {
+    free(M[i]);
   }
-  free(V);
+  free(M);
 }
 
-void Vektor_Destroy( Vektor v){
+void Vector_Destroy( Vector v){
   TupleDestroy(v.v);
 }
 
 void Matrix_Destroy (Matrix A){
-  TupleOfTupleDestroy(A.M);
+  TupleOfTupleDestroy(A.M, A.m);
 }
 
-Matrix Matrix_Report(FILE * f, Matrix A){
+void Matrix_Report(FILE * f, Matrix A){
   size_t n = A.n;
   size_t m = A.m;
 
   for (size_t i = 0; i <m; i++){
-    for (size_t j = 0; j < count; j++) {
-      fprintf(f, "%lf ", A[i][j] );
+    for (size_t j = 0; j < n; j++) {
+      fprintf(f, "%lf ", A.M[i][j] );
     }
-    fprintf(F, "\n");
+    fprintf(f, "\n");
   }
+  return;
 }
 
-Vektor Vektor_Report(FILE * f, Vektor v){
+void Vector_Report(FILE * f, Vector v){
   size_t n = v.n;
 
-  for (size_t i = 0; i < count; i++) {
-    fprintf(f, "%lf\n",v[i]);
+  for (size_t i = 0; i < n; i++) {
+    fprintf(f, "%lf\n",v.v[i]);
   }
+  return;
 }
