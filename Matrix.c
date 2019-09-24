@@ -41,6 +41,17 @@ Matrix Matrix_Create_Random(size_t m, size_t n, RNG Joe, double s){
 return A;
 }
 
+Matrix Matrix_CreateFromFile(char * Filename){
+  size_t n,m;
+
+  double ** V = TupleOfTuple_LoadFromFile(Filename, &m, &n);
+
+  Matrix A = Matrix_Create(m, n);
+  A.V= V;
+
+  return A;
+}
+
 
 double * TupleCreate(size_t n){
   double * v;
@@ -69,6 +80,51 @@ void TupleOfTupleDestroy(double ** V, size_t m){
   free(V);
 }
 
+double ** TupleOfTuple_LoadFromFile (char * Filename, size_t * pm, size_t * pn){
+
+  double ** A = NULL;
+
+  char s[2048];
+  FILE * F = NULL;
+  size_t m=0, n=0;
+
+  char * t;
+
+  F = fopen (Filename, "r");
+
+  do {
+    t = fgets (s, 2048, F);
+  }
+  while ((s[0] == '#') || (s[0] == 10));
+
+  if (t==NULL) return NULL;
+
+	sscanf(s, "%zu %zu", &m, &n);
+
+  A = TupleOfTupleCreate (m,n);
+
+  {
+    char * p;
+    char * q;
+    for (size_t i = 0; i<m; i=i+1) {
+      do {
+        t = fgets (s, 2048, F);
+      }
+      while ((s[0] == '#') || (s[0] == 10));
+      p = s; q = NULL;
+      for (size_t j = 0; j<n; j=j+1) {
+
+        A[i][j] = strtod (p, &q);
+        p = q;
+      }
+    }
+  }
+
+  fclose(F);
+
+  *pm = m; *pn = n;
+  return A;
+}
 void Vector_Destroy( Vector v){
   TupleDestroy(v.v);
 }

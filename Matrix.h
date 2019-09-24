@@ -24,11 +24,15 @@ typedef struct Matrix Matrix;
 double * TupleCreate(size_t);
 double ** TupleOfTupleCreate(size_t, size_t);
 
+double ** TupleOfTuple_LoadFromFile (char *, size_t *, size_t *);
+
+
 void TupleDestroy(double*);
 void TupleOfTupleDestroy(double**, size_t);
 
 Matrix Matrix_Create(size_t, size_t);
 Matrix Matrix_Create_Random(size_t, size_t, RNG, double);
+Matrix Matrix_CreateFromFile(char *);
 void Matrix_Destroy(Matrix);
 void Matrix_Report(FILE *,Matrix, char *, char *);
 
