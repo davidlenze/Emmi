@@ -65,7 +65,7 @@ void Matrix_Rotate(Matrix A){
       alpha=copysign(sqrt(x*x+y*y),x);
       c = x/alpha;
       s = -y/alpha;
-      for (size_t t = 0; t < A.n; t++) {
+      for (size_t t = j; t < A.n; t++) {
         x=A.V[j][t]; //j 0
         y=A.V[i][t];
         A.V[j][t]=c*x-s*y; //j 0s
