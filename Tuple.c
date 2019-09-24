@@ -1,183 +1,216 @@
+/* 
+ * ******************************************************** 
+ *  EMMI/NUMERIK - Unterrichtsmaterial (c) 2018
+ *  Jens Burmeister, Scientific Computing, Uni Kiel      
+ * ********************************************************
+ */
+
+#include <stdbool.h>  /* wegen bool */
+#include <stddef.h>   /* wegen size_t, NULL */
+#include <stdio.h>    /* wegen printf */
+#include <stdlib.h>   /* wegen calloc, exit, */
+
 #include "Tuple.h"
-#include "RNG.h"
-#include "RNG.c"
-#include <stdbool.h>
-#include<math.h>
-void Vector_Rotate(FILE * F, vector v){
-	Givens_Rotate(F, v.v, v.n);
-	
+
+/* ---------------------------------------------------------------------------------------- */
+
+double * Tuple_Create (size_t n){
+  
+  double * p = NULL;
+  p = calloc (n, sizeof(double));
+  return p;
 }
-vector Vector_Create_Random(RNG joe, size_t n){
-	vector x ={0, NULL};
-	x= Vector_Create(n);
-	for(size_t i=0; i<n; i++){
-		x.v[i]=RNG_Evaluate_Double(joe, joe.l);
-		
-	}
-	return x;
+
+void Tuple_Destroy (double * p){
+  
+  if (p != NULL) {
+    free(p);
+  } else {
+    exit(41);
+  }  
 }
-vector Vector_Create(size_t n){
-	vector v = {0,NULL};
-	v.v = Tuple_Create(n);
-	v.n= n;
-	return v;
-	
+
+double * Tuple_Create_Unit (size_t n, size_t i){
+  
+  double * x;
+  x = Tuple_Create (n);
+  x[i] = 1.0;
+  return x;
 }
-void Vector_Destroy(vector v){
-	Tuple_Destroy(v.v);
-	
+
+void Tuple_Report ( FILE * F, size_t n, double * x, char * fmt, char * info ){
+    
+   fprintf (F, "# Tuple_Report: (n=%zu) [%s]\n", n, info);
+   for (size_t i=0; i<n; i=i+1) {
+     fprintf (F, fmt, x[i]);
+  }    
 }
-void Vector_Report(FILE * F, vector v, char * fmt, char * info){
-	fprintf(F,"%s \n \n", info);
-	for(unsigned int i = 0;i<v.n;i++){
-		fprintf(F, fmt, v.v[i], "\n");
-	}
-	
+
+double * Tuple_LoadFromFile (char * Filename, size_t * pn){
+
+  double * x = NULL;
+  
+  char s[2048];
+  FILE * F = NULL;
+  size_t n=0;
+ 
+  char * t;
+   
+  F = fopen (Filename, "r");
+  
+  do {
+    t = fgets (s, 2048, F);
+  }
+  while ((s[0] == '#') || (s[0] == 10));
+     
+  if (t==NULL) return NULL;  
+     
+	sscanf(s, "%zu", &n);
+  
+  x = Tuple_Create (n);
+  
+  {  
+    char * p;
+    for (size_t i = 0; i<n; i=i+1) {
+      do {
+        t = fgets (s, 2048, F);
+      }
+      while ((s[0] == '#') || (s[0] == 10));
+      p = s;
+      x[i] = strtod (p, NULL);
+      
+    }
+  }
+  
+  fclose(F);
+
+  *pn = n;
+  return x;
 }
-double Givens_Rotate(FILE * F, double * v, unsigned int n){
-	Tuple_Print(F,v,n);
-	double tmp=0;
-	double c,s;
-	for(unsigned int i=0;i<n;i++){
-	tmp=tmp+ v[i]*v[i];
-	}
-	tmp=sqrt(tmp);
-	v[0]= tmp;
-	Tuple_Print(F,v,n);
-	for(unsigned int i=1;i<n;i++){
-		c=1.0; s= - v[i]/tmp;
-		v[i]= s;
-		Tuple_Print(F,v,n);
-	}
-	return tmp;
+
+
+/* ---------------------------------------------------------------------------------------- */
+
+unsigned int * TupleOfUnsignedInt_Create (size_t n){
+  
+  unsigned int * p = NULL;
+  p = calloc (n, sizeof(unsigned int));
+  return p;
 }
-void Givens_Backwards(FILE * F, double * v, unsigned int n){
-	Tuple_Print(F,v,n);
-	double tmp=0 ;
-	for(unsigned int i=1; i<n;i++){
-		v[i]=v[i]*(-1)*v[0];
-		if(i<=n-1){
-			tmp=tmp+v[i]*v[i];
-		}
-	
-		Tuple_Print(F,v,n);
-	}
-	
-	v[0]=sqrt((v[0]*v[0])-tmp);
-	Tuple_Print(F,v,n);
+
+void TupleOfUnsignedInt_Destroy (unsigned int * p){
+  
+  if (p != NULL) {
+    free(p);
+  } else {
+    exit(41);
+  }  
 }
-bool compare (unsigned int a,unsigned int b){
-	if(a%2==1){ 
-				if(b%2==1){
-					return (a<b);
-				}
-				return true;
-	}
-	else if(b%2==1){
-					return false;
-				}
-			
-	return (a>b);
+
+void TupleOfUnsignedInt_Report ( FILE * F, size_t n, unsigned int * x, char * fmt, char * info ){
+    
+   fprintf (F, "# TupleOfUnsignedInt_Report: (n=%zu) [%s]\n", n, info);
+   for (size_t i=0; i<n; i=i+1) {
+     fprintf (F, fmt, i, x[i]);
+  }    
 }
-double * Tuple_Create(size_t n){
-	double * tuple;
-	tuple= malloc(sizeof(double)*n);
-	return tuple;
+
+unsigned int * Permutation_Create_Identity (size_t n){
+  
+  unsigned int * P;
+  P = TupleOfUnsignedInt_Create (n);
+  for (unsigned int i=0; i<n; i=i+1) {P[i] = i;}
+  return P;
 }
-void Tuple_Destroy(double * tuple){
-	free(tuple);
+void Permutation_Destroy (unsigned int * P){
+  
+  TupleOfUnsignedInt_Destroy(P);
 }
-void Tuple_Print(FILE * F, double * tuple,size_t n){
-	fprintf(F, "\n \n");
-	for(unsigned int i = 0;i<n;i++){
-		fprintf(F,"%lf \n", tuple[i]);
-	}
+
+void Permutation_Swap (unsigned int * P, size_t i, size_t j){
+  
+  unsigned int tmp;
+  tmp = P[i]; P[i] = P[j]; P[j] = tmp;
 }
-unsigned int * unsignedTuple_Create(unsigned int n){
-	unsigned int * v;
-	v= malloc(sizeof(unsigned int)*n);
-	return v;
-	
+
+
+/* ---------------------------------------------------------------------------------------- */
+
+double ** TupleOfTuple_Create (size_t m, size_t n){
+  
+  double ** A;
+  double * x;
+  
+  A = calloc (m, sizeof(double *));
+  x = Tuple_Create (m*n);
+  A[0] = x;
+  for (size_t i=1; i<m; i=i+1){
+    A[i] = A[i-1] + n;
+  }
+  
+  return A;
+}  
+
+void TupleOfTuple_Destroy (double ** A){
+    
+  Tuple_Destroy (A[0]);
+  free (A);
 }
-void unsignedTuple_Destroy(unsigned int * v){
-	
-	free(v);
-	
+
+double ** TupleOfTuple_LoadFromFile (char * Filename, size_t * pm, size_t * pn){
+
+  double ** A = NULL;
+  
+  char s[2048];
+  FILE * F = NULL;
+  size_t m=0, n=0;
+ 
+  char * t;
+   
+  F = fopen (Filename, "r");
+  
+  do {
+    t = fgets (s, 2048, F);
+  }
+  while ((s[0] == '#') || (s[0] == 10));
+     
+  if (t==NULL) return NULL;  
+     
+	sscanf(s, "%zu %zu", &m, &n);
+  
+  A = TupleOfTuple_Create (m,n);
+  
+  {  
+    char * p;
+    char * q;
+    for (size_t i = 0; i<m; i=i+1) {
+      do {
+        t = fgets (s, 2048, F);
+      }
+      while ((s[0] == '#') || (s[0] == 10));
+      p = s; q = NULL;
+      for (size_t j = 0; j<n; j=j+1) {
+    
+        A[i][j] = strtod (p, &q);
+        p = q;
+      }
+    }
+  }
+  
+  fclose(F);
+
+  *pm = m; *pn = n;
+  return A;
 }
-void unsignedTuple_Print(FILE * F, unsigned int * v,unsigned int n){
-	fprintf(F,"\n \n");
-	for(unsigned int i = 0;i<n;i++){
-		fprintf(F, "%u \n", v[i]);
-	}
-	
-}
-void unsignedTuple_Bubblesort(FILE * F, unsigned int * v, unsigned int n){
-	unsigned int tmp;
-	for(unsigned int i=n-1;i>0;i--){
-		for(unsigned int j=0;j<i;j++){
-			
-			if(compare(v[j],v[j+1])){
-				unsignedTuple_Print(F,v,n);
-				tmp= v[j];
-				v[j]=v[j+1];
-				v[j+1]=tmp;
-			}
-		}
-		
-		
-	}
-	
-	
-	
-}
-void Tuple_Bubblesort(FILE * F, double * v, unsigned int n){
-	double tmp;
-	for(unsigned int i=n-1;i>0;i--){
-		for(unsigned int j=0;j<i;j++){
-			
-			if(v[j]>v[j+1]){
-				Tuple_Print(F,v,n);
-				tmp= v[j];
-				v[j]=v[j+1];
-				v[j+1]=tmp;
-			}
-		}
-		
-		
-	}
-	
-	
-	
-}
-double * unsignedTuple_RNG_Create(unsigned int n, RNG joe){
-	double * v;
-	unsigned int l=3;
-	v=malloc(sizeof(unsigned int)*n);
-		for(unsigned int i=0;i<n;i++){
-			l=RNG_Evaluate(joe,l);
-			v[i]=l;
-			
-		}
-	return v;
-}
-int main(void){
-	unsigned int n=10;
-	double * v;
-	double l;
-	vector x= {0,NULL};
-	RNG joe;
-	FILE * F;
-	F = stdout;
-	//F= fopen("Tuple.dat","w");*/
-	joe= RNG_Set_Knuth();
-	v= unsignedTuple_RNG_Create(n,joe);
-	Givens_Rotate(F,v,n);
-	Givens_Backwards(F,v,n);
-	
-	//unsignedTuple_Bubblesort(F,v,n);
-	/*for(unsigned int i =0;i<10;i++){
-		unsignedTuple_Print(F,v,n);
-	}*/
-	Tuple_Destroy(v);
-	return 0;
-}
+
+
+void TupleOfTuple_Report ( FILE * F, size_t m, size_t n, double ** A, char * fmt, char * info){
+  
+  fprintf (F, "# TupleOfTuple_Report: (m=%zu)(n=%zu) [%s]\n", m, n, info);
+  for (size_t i=0; i<m; i=i+1) {
+    for (size_t j=0; j<n; j=j+1) {
+      fprintf (F, fmt, A[i][j]);
+    } 
+    fprintf (F, "\n");   
+  }
+}       
