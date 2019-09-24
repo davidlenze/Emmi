@@ -33,6 +33,8 @@ void TupleOfTupleDestroy(double**, size_t);
 Matrix Matrix_Create(size_t, size_t);
 Matrix Matrix_Create_Random(size_t, size_t, RNG, double);
 Matrix Matrix_CreateFromFile(char *);
+
+void Matrix_Rotate(Matrix);
 void Matrix_Destroy(Matrix);
 void Matrix_Report(FILE *,Matrix, char *, char *);
 
@@ -40,10 +42,6 @@ Vector Vector_Create(size_t);
 Vector Vector_Create_Random(size_t, RNG, double);
 void Vector_Destroy(Vector);
 void Vector_Report(FILE *, Vector, char *, char *);
-
-
-
-
 
 
 

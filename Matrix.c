@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #include "Matrix.h"
 #include "RNG.h"
+
 
 Vector Vector_Create(size_t n){
   Vector v;
@@ -52,6 +55,26 @@ Matrix Matrix_CreateFromFile(char * Filename){
   return A;
 }
 
+void Matrix_Rotate(Matrix A){
+  double x, y, alpha,c,s;
+  for (size_t j = 0; j < A.n -1; j++) {
+    for (size_t i = j+1; i < A.m ; i++) {
+
+      x=A.V[j][j]; // j 0
+      y=A.V[i][j];
+      alpha=copysign(sqrt(x*x+y*y),x);
+      c = x/alpha;
+      s = -y/alpha;
+      for (size_t t = 0; t < A.n; t++) {
+        x=A.V[j][t]; //j 0
+        y=A.V[i][t];
+        A.V[j][t]=c*x-s*y; //j 0s
+        A.V[i][t]=s*x+c*y;
+      }
+      A.V[i][j]=s/c;
+    }
+  }
+}
 
 double * TupleCreate(size_t n){
   double * v;
@@ -125,6 +148,7 @@ double ** TupleOfTuple_LoadFromFile (char * Filename, size_t * pm, size_t * pn){
   *pm = m; *pn = n;
   return A;
 }
+
 void Vector_Destroy( Vector v){
   TupleDestroy(v.v);
 }
