@@ -1,22 +1,18 @@
+#ifndef RNG_H
+#define RNG_H
 struct RNG {
-  unsigned int a;
-  unsigned int b;
-  unsigned int m;
+  unsigned int a ;
+  unsigned int b ;
+  unsigned int m ;
 };
 
+
+
 typedef struct RNG RNG;
+RNG RNG_Set (unsigned int, unsigned int, unsigned int);
+RNG RNG_Set_Knuth(void);
 
-RNG RNG_Set(unsigned int,unsigned int,unsigned int);
-RNG RNG_Set_Knuth (void);
-
-unsigned int RNG_Evaluate (RNG, unsigned int);
+double RNG_Evaluate(RNG, double);
 
 void RNG_Report (RNG);
-
-double distance(unsigned int, unsigned int);
-
-double estimate_pi(unsigned int, unsigned int);
-void create_rauschen(unsigned int);
-double a(double);
-unsigned int find_optimal(unsigned int, unsigned int, unsigned int);
-double give_optimal_value(unsigned int , unsigned int , unsigned int);
+#endif

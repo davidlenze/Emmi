@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include "Matrix.h"
 #include "RNG.h"
+#include "Tuple.h"
 
 
 Vector Vector_Create(size_t n){
@@ -11,6 +13,7 @@ Vector Vector_Create(size_t n){
   v.v = TupleCreate(n);
   return v;
 }
+
 Matrix Matrix_Create(size_t m, size_t n){
   Matrix A;
   A.m = m;
@@ -55,83 +58,55 @@ Matrix Matrix_CreateFromFile(char * Filename){
   return A;
 }
 
-void Matrix_Rotate(Matrix A){
-  double x, y, alpha,c,s;
-  for (size_t j = 0; j < A.n -1; j++) {
-    for (size_t i = j+1; i < A.m ; i++) {
+Vector Vector_CreateFromFile(char * Filename){
+  size_t n;
 
-      x=A.V[j][j]; // j 0
-      y=A.V[i][j];
-      alpha=copysign(sqrt(x*x+y*y),x);
-      c = x/alpha;
-      s = -y/alpha;
-      for (size_t t = j; t < A.n; t++) {
-        x=A.V[j][t]; //j 0
-        y=A.V[i][t];
-        A.V[j][t]=c*x-s*y; //j 0s
-        A.V[i][t]=s*x+c*y;
-      }
-      A.V[i][j]=s/c;
-    }
-  }
+  double * v = Tuple_LoadFromFile(Filename, &n);
+
+  Vector w = Vector_Create(n);
+  w.v= v;
+
+  return w;
+}
+
+Matrix VandermondeMatrix_Create(Vector v){
+  size_t n = v.n;
+  Matrix A = Matrix_Create(n,n);
+  A.V = VandermondeTuple_Create (v.v, n);
+  return A;
+}
+
+void Matrix_Rotate(Matrix A){
+  int m,n;
+  m = (int) A.m;
+  n = (int) A.n;
+
+  TupleOfTupleRotate(m,n,A.V);
 }
 
 void Matrix_Rerotate(Matrix A){
-  double x,y,c,s,t;
+
   int n,m;
 
   n = (int) A.n;
   m = (int) A.m;
-  for (int j = n-2; j >= 0; j--){
-    for (int i = m-1; i > j; i--) {
-      t = A.V[i][j];
-      A.V[i][j]=0.0;
-      c = sqrt(1.0/(t*t+1.0));
-      s = t*c;
-      for (int t = j; t < n; t++) {
-        x = A.V[j][t];
-        y = A.V[i][t];
-        A.V[j][t]=c*x+s*y;
-        A.V[i][t]=c*y-s*x;
-      }
-    }
-  }
+  TupleOfTupleRerotate(m,n,A.V);
 }
 
-void Solve_LinearSystemOfEquations(Matrix A, Vector v){
+void Matrix_Eliminate(Matrix A){
+  TupleOfTupleEliminate((int)A.m,(int)A.n,A.V);
+}
+
+void Matrix_ReEliminate(Matrix A){
+  TupleOfTupleReEliminate((int)A.m,(int)A.n,A.V);
+}
+
+bool Solve_LinearSystemOfEquations(Matrix A, Vector v){
+  bool inv;
   Matrix_Rotate(A);
-
-  { //rotate vector
-    double x,y,c,s,t;
-
-
-    for (size_t j = 0; j < A.n-1; j++) {
-      for (size_t i = j+1; i < A.m; i++) {
-        t = A.V[i][j];
-        c = sqrt(1.0/(t*t+1.0));
-        s = t*c;
-        x = v.v[j];
-        y = v.v[i];
-        v.v[j]=c*x-y*s;
-        v.v[i]=s*x+c*y;
-      }
-    }
-  }
-
-  { //solve in place
-    double h;
-    for (int i = v.n-1; i >=0 ; i--) {
-      h = 0;
-      for (int j = v.n-1; j>i; j--){
-        h = h + A.V[i][j]*v.v[j];
-      }
-      v.v[i] = (v.v[i]-h)*A.V[i][i];
-    }
-  }
-
-
-
-
+  TupleRotateFromMatrix(v.v, A.V, A.m, A.n);
+  inv = TupleSolveBackwardsColumn(v.v, A.V, v.n);
+  return inv;
 }
 
 double det(Matrix M) {
@@ -146,79 +121,6 @@ double det(Matrix M) {
   return p;
 }
 
-double * TupleCreate(size_t n){
-  double * v;
-  v = calloc(n,sizeof(double));
-  return v;
-}
-
-double ** TupleOfTupleCreate(size_t m, size_t n){
-  double ** V;
-  V = calloc(m, sizeof(double *));
-  for (size_t i = 0; i<m; i++){
-    V[i] = calloc(n,sizeof(double));
-  }
-  return V;
-}
-
-void TupleDestroy(double * v){
-  free(v);
-  return;
-}
-
-void TupleOfTupleDestroy(double ** V, size_t m){
-  for (size_t i = 0; i < m; i++) {
-    free(V[i]);
-  }
-  free(V);
-}
-
-double ** TupleOfTuple_LoadFromFile (char * Filename, size_t * pm, size_t * pn){
-
-  double ** A = NULL;
-
-  char s[2048];
-  FILE * F = NULL;
-  size_t m=0, n=0;
-
-  char * t;
-
-  F = fopen (Filename, "r");
-
-  do {
-    t = fgets (s, 2048, F);
-  }
-  while ((s[0] == '#') || (s[0] == 10));
-
-  if (t==NULL) return NULL;
-
-	sscanf(s, "%zu %zu", &m, &n);
-
-  A = TupleOfTupleCreate (m,n);
-
-  {
-    char * p;
-    char * q;
-    for (size_t i = 0; i<m; i=i+1) {
-      do {
-        t = fgets (s, 2048, F);
-      }
-      while ((s[0] == '#') || (s[0] == 10));
-      p = s; q = NULL;
-      for (size_t j = 0; j<n; j=j+1) {
-
-        A[i][j] = strtod (p, &q);
-        p = q;
-      }
-    }
-  }
-
-  fclose(F);
-
-  *pm = m; *pn = n;
-  return A;
-}
-
 void Vector_Destroy( Vector v){
   TupleDestroy(v.v);
 }
@@ -231,10 +133,10 @@ void Matrix_Report(FILE * f, Matrix A, char * fmt, char * info){
   size_t n = A.n;
   size_t m = A.m;
 
-  fprintf(f, "%s \n", info);
+  fprintf(f, "\n%s \n", info);
   for (size_t i = 0; i <m; i++){
     for (size_t j = 0; j < n; j++) {
-      if (A.V[i][j]>0){
+      if (A.V[i][j]>=0){
         fprintf(f, " ");
       }
       fprintf(f, fmt, A.V[i][j] );
@@ -252,9 +154,12 @@ void Vector_Report(FILE * f, Vector v, char * fmt, char * info){
   fprintf(f, "%s\n", info);
 
   for (size_t i = 0; i < n; i++) {
+    if(v.v[i]>=0){
+      fprintf(f, " ");
+    }
     fprintf(f, fmt,v.v[i]);
     fprintf(f, "\n" );
   }
+  fprintf(f, "\n\n");
   return;
 }
-
